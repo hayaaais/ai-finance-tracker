@@ -7,21 +7,14 @@ from database import (
     insert_expense,
     delete_expense,
     save_budget,
-    load_budget,
 )
 from reports import (
     get_category_totals,
     get_extreme_expenses,
     get_average_expense,
     get_summary,
-    get_total_spent,
 )
-from budget import (
-    calculate_remaining_budget,
-    calculate_budget_percentage,
-    calculate_budget_excess,
-    get_expenses_by_month,
-)
+from budget import build_budget_overview
 from sorting import sort_expenses
 from search import filter_by_category, filter_by_date, filter_by_description
 from ai import generate_ai_analysis, ask_financial_advisor
@@ -101,20 +94,7 @@ def set_budget(month: str = Path(pattern=r"^\d{4}-\d{2}$"), amount: float = Body
 @app.get("/budget/overview")
 def get_overview():
     expenses = load_expenses()
-    budget_dict = load_budget()
-    current_month = datetime.date.today().strftime("%Y-%m")
-    monthly_budget = budget_dict.get(current_month, 0)
-    monthly_expenses = get_expenses_by_month(current_month, expenses)
-    return {
-        "transactions": len(monthly_expenses),
-        "spent": get_total_spent(monthly_expenses),
-        "monthly_budget": monthly_budget,
-        "remaining": calculate_remaining_budget(
-            {"monthly_budget": monthly_budget}, expenses
-        ),
-        "percentage_used": calculate_budget_percentage(monthly_budget, expenses),
-        "excess": calculate_budget_excess(monthly_budget, expenses),
-    }
+    return build_budget_overview(expenses)
 
 
 @app.get("/expenses/sorted")
@@ -152,7 +132,7 @@ def filter_expenses_by_description(description: str):
 @app.get("/ai/analyze")
 def get_ai_analysis():
     expenses = load_expenses()
-    budget_status = get_overview()
+    budget_status = build_budget_overview(expenses)
     try:
         analysis = generate_ai_analysis(expenses, budget_status)
     except RuntimeError as e:
@@ -163,7 +143,7 @@ def get_ai_analysis():
 @app.post("/ai/ask")
 def post_ai_question(user_query: str = Body(embed=True)):
     expenses = load_expenses()
-    budget_status = get_overview()
+    budget_status = build_budget_overview(expenses)
     try:
         answer = ask_financial_advisor(expenses, budget_status, user_query)
     except RuntimeError as e:
