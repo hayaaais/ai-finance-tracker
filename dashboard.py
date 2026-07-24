@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import requests
 import datetime
 import pandas as pd
@@ -10,7 +11,7 @@ st.set_page_config(
 
 st.title("Expense Tracker Dashboard")
 st.divider()
-API_BASE_URL = "http://127.0.0.1:8000"
+API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 
 
 # ==========================================

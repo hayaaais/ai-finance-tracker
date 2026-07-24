@@ -1,5 +1,5 @@
 import datetime
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Body, Path
 from pydantic import BaseModel, Field
 from database import (
     initialize_database,
@@ -34,7 +34,7 @@ class ExpenseIn(BaseModel):
     amount: float = Field(gt=0)
     category: str = Field(min_length=1)
     description: str = Field(min_length=1)
-    date: str | None = None
+    date: str | None = Field(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$")
 
 
 @app.get("/expenses")
@@ -93,7 +93,7 @@ def get_summary_report():
 
 
 @app.put("/budget/{month}", status_code=200)
-def set_budget(month: str, amount: float = Body(gt=0)):
+def set_budget(month: str = Path(pattern=r"^\d{4}-\d{2}$"), amount: float = Body(gt=0)):
     save_budget(month, amount)
     return {"month": month, "amount": amount}
 
