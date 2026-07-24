@@ -31,6 +31,7 @@ def calculate_budget_excess(monthly_budget, expenses):
         return total_spent - monthly_budget
     return 0
 
+
 def build_budget_overview(expenses: list) -> dict:
     budget_dict = load_budget()
     current_month = datetime.date.today().strftime("%Y-%m")
