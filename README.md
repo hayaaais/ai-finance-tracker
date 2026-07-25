@@ -42,16 +42,16 @@ A full-stack personal finance application for tracking expenses — built with a
 ## 🏗️ How it's structured
 
 ```
-┌─────────────┐       HTTP/JSON        ┌─────────────┐          SQL         ┌──────────────┐
-│  Streamlit  │  ──────────────────▶   │   FastAPI   │  ──────────────────▶ │    SQLite    │
-│  Dashboard  │  ◀──────────────────   │   Backend   │  ◀────────────────── │    (.db)     │
-└─────────────┘                        └──────┬──────┘                      └──────────────┘
-                                              │
-                                              │  prompt + context
-                                              ▼
-                                      ┌───────────────┐
-                                      │  Gemini API   │
-                                      └───────────────┘
+┌─────────────┐      HTTP/JSON       ┌─────────────┐        SQL         ┌──────────────┐
+│  Streamlit  │  ────────────────▶   │   FastAPI   │  ────────────────▶ │    SQLite    │
+│  Dashboard  │  ◀────────────────   │   Backend   │  ◀──────────────── │    (.db)     │
+└─────────────┘                      └──────┬──────┘                    └──────────────┘
+                                            │
+                                            │  prompt + context
+                                            ▼
+                                    ┌───────────────┐
+                                    │  Gemini API   │
+                                    └───────────────┘
 ```
 
 Streamlit never talks to the database directly — every read and write goes through FastAPI, which is where all the validation and business logic actually lives.
