@@ -32,10 +32,14 @@ def get_average_expense(expenses):
 
 
 def get_highest_amount(expenses):
+    if not expenses:
+        return 0
     return max(exp["amount"] for exp in expenses)
-
-
+ 
+ 
 def get_lowest_amount(expenses):
+    if not expenses:
+        return 0
     return min(exp["amount"] for exp in expenses)
 
 

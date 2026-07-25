@@ -4,6 +4,7 @@ import requests
 import datetime
 import pandas as pd
 import altair as alt
+from search import parse_date
 
 st.set_page_config(
     page_title="Expense Tracker Dashboard", page_icon="💰", layout="wide"
@@ -18,6 +19,7 @@ API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 # 1. METRICS SECTION
 # ==========================================
 st.markdown("### 📋 Overview")
+all_expenses = None
 try:
     metrics_response = requests.get(f"{API_BASE_URL}/budget/overview")
 
@@ -152,6 +154,13 @@ with right_panel:
         search_value = st.text_input(
             "Filter by Date", placeholder="YYYY-MM-DD", key="filter_text_date"
         ).strip()
+        if search_value:
+            parsed_date, date_error = parse_date(search_value)
+            if date_error:
+                st.warning(date_error.strip())
+                search_value = ""
+            else:
+                search_value = parsed_date
     elif choice == "Description":
         search_value = st.text_input(
             "Filter by Description", placeholder="e.g. Lunch", key="filter_text_desc"
@@ -282,24 +291,20 @@ if submitted:
 # ==========================================
 st.divider()
 st.markdown("### 💰 Budget Management")
-try:
-    if metrics_response.status_code == 200:
-
-        col1, col2 = st.columns(2)
-        with col1:
-            st.caption("")
-            st.metric(
-                label="Current Budget", value=f"₸{all_expenses['monthly_budget']:.2f}"
-            )
-            st.caption("")
-        with col2:
-            st.caption("")
-            st.metric(label="Exceeded By", value=f"₸{all_expenses['excess']:.2f}")
-            st.caption("")
-    else:
-        st.error(f"Could not load budget data.")
-except requests.exceptions.ConnectionError:
-    st.error("Could not connect to the server. Backend is offline.")
+if all_expenses is not None:
+    col1, col2 = st.columns(2)
+    with col1:
+        st.caption("")
+        st.metric(
+            label="Current Budget", value=f"₸{all_expenses['monthly_budget']:.2f}"
+        )
+        st.caption("")
+    with col2:
+        st.caption("")
+        st.metric(label="Exceeded By", value=f"₸{all_expenses['excess']:.2f}")
+        st.caption("")
+else:
+    st.error("Could not load budget data.")
 
 current_month = datetime.date.today().strftime("%Y-%m")
 with st.form("form2"):
