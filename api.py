@@ -1,5 +1,6 @@
 import datetime
 from fastapi import FastAPI, HTTPException, Body, Path
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from database import (
     initialize_database,
@@ -20,6 +21,12 @@ from search import filter_by_category, filter_by_date, filter_by_description
 from ai import generate_ai_analysis, ask_financial_advisor
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # who's allowed to call this API
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 initialize_database()
 
 
