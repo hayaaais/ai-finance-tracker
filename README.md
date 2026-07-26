@@ -2,6 +2,13 @@
 
 A full-stack personal finance application for tracking expenses — built with a FastAPI REST backend, an interactive Streamlit dashboard, and Google Gemini for AI-generated financial insights.
 
+🔗 **Live demo:** [ai-finance-tracker-app.streamlit.app](https://ai-finance-tracker-app.streamlit.app)
+
+> **Note:** The backend runs on Render's free tier, which spins down after
+> inactivity — the first request after idle time may take 30-60 seconds to
+> respond. The free tier also doesn't persist storage between restarts, so
+> demo data may occasionally reset.
+
 ![Demo](./screenshots/demo.gif)
 
 ## ✨ What it does
