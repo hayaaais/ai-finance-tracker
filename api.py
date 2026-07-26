@@ -23,7 +23,7 @@ from ai import generate_ai_analysis, ask_financial_advisor
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # who's allowed to call this API
+    allow_origins=["https://ai-finance-tracker-app.streamlit.app"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
